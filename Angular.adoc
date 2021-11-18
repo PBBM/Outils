@@ -1,0 +1,595 @@
+:imagesdir: images
+:couchbase_version: current
+:toc:
+:project_id: gs-how-to-write-a-guide
+:icons: font
+:source-highlighter: prettify
+:tags: guides,meta
+
+= Angular
+
+Links:
+link:https://angular.io/docs[Angular.io]
+/ link:https://docs.asciidoctor.org/asciidoc/latest/[Asciidoctor.org]
+/ link:https://codepen.io[CodePen.io]
+/ link:https://getbootstrap.com/docs/4.0/components/alerts/[Bootstrap]
+/ link:https://powerman.name/doc/asciidoc[AsciiDoc cheatsheet]
+
+== Manipulations
+
+==== CLI Deep Dive & Troubleshooting
+
+.Infos
+[%collapsible]
+====
+link:https://angular.io/cli#basic-workflow[Angular.io - CLI Overview and Command Reference]
+
+In the next lecture, we're going to build our first little app!
+
+If the CLI prompts you to answer some questions (some versions do that), you can simply hit ENTER for all questions. This will accept the default settings which are fine for this course.
+
+The CLI generates a different welcome screen than you're going to see in my video though. No worries, you'll still be able to follow along without issues! Just make sure to code along so that your code equals mine - Angular itself didn't change a bit :)
+
+https://github.com/couchbase-guides
+
+If you want to dive deeper into the CLI and learn more about its usage, have a look at its official documentation: https://github.com/angular/angular-cli/wiki
+
+You encountered issues during the installation of the CLI or setup of a new Angular project?
+
+A lot of problems are solved by making sure you're using the latest version of NodeJS, npm and the CLI itself.
+====
+
+==== Install & use Bootstrap
+.Install
+....
+npm install --save bootstrap@3
+....
+
+.Add the path in the `angular.json`
+Add `"node_modules/bootstrap/dist/css/bootstrap.min.css"` +
+In `Styles` of the `angular.json` {} projects > {} my-first-app > {} architect > {} build > {} options > {} styles
+
+.Check the install
+On the `localhost:4200` +
+Inspecter > Sources > styles.css > `Bootstrap v3...`
+
+===== Updating NodeJS
+
+Go to nodejs.org and download the latest version - uninstall (all) installed versions on your machine first.
+
+===== Updating npm
+
+Run ``[sudo] npm install -g npm`  (sudo  is only required on Mac/ Linux)
+
+===== Updating the CLI
+
+
+....
+[sudo] npm uninstall -g angular-cli @angular/cli
+....
+....
+npm cache verify
+....
+....
+[sudo] npm install -g @angular/cli
+....
+
+
+
+==== New Angular project
+.Create a new project :
+....
+ng new my-first-project
+....
+....
+cd my-first-project
+....
+....
+ng serve
+....
+
+===== Create a new project properly
+.New project process
+[%collapsible]
+====
+Make sure, you do create that app by also adding the `--no-strict` flag to the `ng new` command - otherwise you will run into issues later on.
+
+We'll also install the Bootstrap CSS Framework and in this course, we use version 3 of the framework. Install it via `npm install --save bootstrap@3`  => The `@3` is important!
+
+Additionally, when using a project created with Angular CLI 6+ (check via `ng v` ), you'll have an `angular.json`  file instead of an `.angular-cli.json`  file. In that file, you still need to add Bootstrap to the `styles[]`  array as shown in the next video, but the path should be node_modules/bootstrap/dist/css/bootstrap.min.css , NOT ../node_modules/bootstrap/dist/css/bootstrap.min.css . The leading ../  must not be included.
+====
+
+
+===== Common issues & solutions
+.Here are some common issues & solutions:
+[%collapsible]
+====
+*Creation of a new project takes forever (longer than 3 minutes)*:: That happens on Windows from time to time => Try running the command line as administrator
+
+*You get an EADDR error (Address already in use)*:: You might already have another ng serve process running - make sure to quit that or use `ng serve --port ANOTHERPORT`  to serve your project on a new port
+
+*My changes are not reflected in the browser (App is not compiling)*:: Check if the window running `ng serve  displays an error. If that's not the case, make sure you're using the latest CLI version and try restarting your CLI
+====
+
+
+
+=== Create a component
+
+.Manually process
+[%collapsible]
+====
+
+- *Create a PACKAGE* in the `app` package (ex: `server`)
+- *Create the COMPONENT* in the package (ex: `server.component.ts`)
+. *Import the `Component`* package from the `@angular/core`
+. *Add the `selector`*(ex: `selector: 'app-server',`)
+. *Add the `templateUrl`*(ex: `templateUrl: './server.component.html'`)
+. *Export the class* (ex: `ServerComponent`) +
+[source,typescript]
+----
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html'
+})
+
+export class ServerComponent {
+}
+----
+- *Import the server component* in the `app.module.ts`: +
+`import { ServerComponent } from './server/server.component';`
+. *Add `ServerComponent`* in declarations: `app.module.ts` > `@NgModule` > `declarations`
+
+The HTML tag by witch you're able to use this component later in your other components
+====
+
+.Automaticaly process
+[%collapsible%open]
+====
+....
+ng generate component xxx
+....
+WARNING: Check the 'app.module.ts' upgrade with the new component selector ('import' + 'declarations')
+
+====
+
+=== Integrate component in 'app.module.ts'
+<app-server> <app-server>`
+
+
+
+
+
+
+== Angular archi.
+
+==== Main.ts
+The `main.ts` imports the `{ AppModule }` and launch the `AppModule` in the first function. Witch represents the `app.module.ts` in the *app* package. +
+
+*Bootstrap array* in the `app.module.ts`. +
+
+==== @NgModule
+
+===== declarations
+
+===== imports
+
+===== providers
+
+===== bootstrap
+
+
+==== @Component
+
+===== HTML templates
+link:https://www.tutorialsteacher.com/angular/html-template[Tutorial Teacher link]
+
+.Inline Template
+An inline HTML template for a component is defined using template config in `@Component` decorator, as shown below.
+
+It can be a single line template wrapped inside double quotes or single quotes.
+----
+@Component({
+    selector: "app-greet",
+    template: "Enter Your Name: <input value={{name}} />"
+})
+----
+It can also be a multi-line template wrapped inside backsticks char `.
+----
+@Component({
+    selector: "app-greet",
+    template: `<div>
+    Enter Your Name: <input type="text" value={{name}} /> <br/>
+    <button (click)="greet()">Greet Me!</button>
+    </div>`
+})
+----
+
+.Linked template
+A component can have a separate HTML file to include an HTML template of a component. Use the `templateUrl` parameter to declare the path of the HTML template file, as shown below.
+----
+@Component({
+    selector: "app-greet",
+    templateUrl: "./mycomponent.component.html"
+})
+----
+
+===== Styles template
+link:https://angular.io/guide/component-styles[Angular docs]
+
+.Inline styles
+----
+@Component({
+  selector: 'app-root',
+  template: `
+    <h1>Tour of Heroes</h1>
+    <app-hero-main [hero]="hero"></app-hero-main>
+  `,
+  styles: ['h1 { font-weight: normal; }']
+})
+export class HeroAppComponent {
+/* . . . */
+}
+----
+
+.Inline styles in HTML
+Embed CSS styles directly into the HTML template by putting them inside `<style>` tags.
+----
+@Component({
+  selector: 'app-hero-controls',
+  template: `
+    <style>
+      button {
+        background-color: white;
+        border: 1px solid #777;
+      }
+    </style>
+    <h3>Controls</h3>
+    <button (click)="activate()">Activate</button>
+  `
+})
+----
+
+
+== Basic workflow
+
+=== Data-Binding
+
+Basically, if you want to output something in your template, print some text to it, use *string interpolation*,
+if you want to change some property, be that of a HTML element of a directive or a component use *property binding*.
+
+
+==== String interpolation {{ }}
+link:https://angular.io/guide/interpolation[Angular.io - Text interpolation]
+
+IMPORTANT: First of all, string interpolation has to resolve to a *string* or something witch can be converted into a string (ex.: number, boolean...).
+
+.Import FormsModule in `app.module.ts`
+Import `{ FormsModule } from @angular/forms` +
+Add `FormsModule` in `imports` inside `@NgModule`
+
+.Create variable in the `app.component.ts`
+Create `name = "PB"`
+
+.Create `input` and `<paragraph>` in the .html
+The *input* with the ngModel: `<input type="text" [(ngModel)]="name">` +
+The paragraph with *interpolation*: `<p> {{name}} <p>`
+
+==== Property binding []
+link:https://angular.io/guide/property-binding#property-binding[Angular.io - Property binding]
+
+TIP: Property binding moves a value in one direction, from a component's property into a target element property.
+
+To bind to an element's property, enclose it in square brackets, `[]`, which identifies the property as a target property.
+A target property is the DOM property to which you want to assign a value.
+For example, the target property in the following code is the image element's `src` property.
+
+.src/app/app.component.html
+----
+<img [src]="itemImageUrl">
+----
+
+In most cases, the target name is the name of a property, even when it appears to be the name of an attribute. In this example, `src` is the name `<img>` element property.
+
+Declare the `itemImageUrl` property in the class, in this case `AppComponent`.
+
+.src/app/app.component.ts
+----
+itemImageUrl = '../assets/phone.png';
+----
+
+
+===== Bind values between components
+link:https://angular.io/guide/property-binding#bind-values-between-components[Angular.io]
+
+To set the model property of a custom component, place the target, here `childItem`, between square brackets `[]` followed by an equal sign and the property.
+Here, the property is `parentItem`.
+
+.src/app/app.component.html
+----
+<app-item-detail [childItem]="parentItem"></app-item-detail>
+----
+To use the target and the property, you must declare them in their respective classes.
+
+Declare the target of `childItem` in its component class, in this case `ItemDetailComponent`.
+
+For example, the following code declares the target of `childItem` in its component class, in this case `ItemDetailComponent`.
+
+Then, the code contains an `@Input()` decorator with the `childItem` property so data can flow into it.
+
+.src/app/item-detail/item-detail.component.ts
+----
+@Input() childItem = '';
+----
+Next, the code declares the property of `parentItem` in its component class, in this case `AppComponent`.
+In this example the type of `childItem` is string, so `parentItem` needs to be a string.
+Here, `parentItem` has the string value of `lamp`.
+
+
+.src/app/app.component.ts
+----
+parentItem = 'lamp';
+----
+With this configuration, the view of `<app-item-detail>` uses the value of lamp for `childItem`.
+
+
+
+
+==== Event binding ( )
+
+link:https://stackblitz.com/run?file=src%2Fapp%2Fapp.component.html[StackBlitz - Event Binding] /
+link:https://angular.io/guide/event-binding[Angular.io - Event Binding]
+
+To bind to an event you use the Angular *event binding* syntax.
+This syntax consists of a target event name within parentheses to the left of an equal sign, and a quoted template statement to the right.
+In the following example, the target event name is `click` and the template statement is `onSave()`.
+
+.Event binding syntax
+----
+<button (click)="onSave()">Save</button>
+----
+
+The event binding listens for the button's click events and calls the component's `onSave()` method whenever a click occurs.
+
+===== Listen to an input event
+
+Input is a HTML DOM event.
+Now, to extract the value of this field is, you can do this by passing `$event`.
+.servers.component.html
+----
+<input
+  type="text"
+  class="form-control"
+  (input)="onUpdateServerName($event)">
+----
+`$event` is a kind of reserved variable name, you can use in the template with event binding.
+In our case, `$event` will simply be the data emitted with that event. `$event` gives us data about this event.
+Now we can capture this data with `$event` passed as an argument to the method we're calling.
+
+TIP: `$event` is something to keep in mind, *reserved word* wich gives us access to event data.
+
+.servers.component.ts
+----
+export class ServersComponent implements OnInit {
+  (...)
+  serverName = '';
+
+  (...)
+
+  onUpdateServerName(event: Event) {
+    this.serverName = (<HTMLInputElement>event.target).value;
+  }
+}
+----
+Here we are assign this value, extract from the event, to our `serverName`.
+
+
+==== Two-Way-Binding
+IMPORTANT: FormsModule is required for Two-Way-Binding
+
+.Import
+[%collapsible]
+====
+****
+For Two-Way-Binding to work, you need to enable the `ngModel` directive.
+This is done by adding the `FormsModule`  to the `imports[]`  array in the AppModule.
+
+You then also need to add the import from `@angular/forms`  in the app.module.ts file:
+
+`import { FormsModule } from '@angular/forms';`
+****
+====
+
+It will trigger on the input event and update the value of `serverName` in our component automatically.
+
+On the other hand, since it is two-way binding, it will also update the value of the input element `serverName//.
+
+.Example *property binding* vs *two-way binding*
+----
+ <input
+   type="text"
+   class="form-control"
+   (input)="onUpdateServerName($event)">
+
+    (...)
+
+ <input
+  type="text"
+  class="form-control"
+  [(ngModel)]="serverName">
+----
+
+._UDEMY exercice_
+[%collapsible]
+====
+*_Exercice statement:_* +
+
+Add a Input field which update a property ('username') via Two-Way-Binding +
+Output the username property via String Interpolation (in a paragraph below the input) +
+Add a button which may only be clicked if the username is NOT an empty string +
+Upon clicking the button, the username should be reset to an empty string +
+
+*_Answer:_* +
+
+.servers.component.ts
+----
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-servers',
+  templateUrl: './servers.component.html',
+  styleUrls: ['./servers.component.css']
+})
+export class ServersComponent implements OnInit {
+
+  constructor() { }
+
+  username = '';
+
+  ngOnInit(): void {
+  }
+
+  onCheckLength(){
+    var lengthValue;
+    this.username.length != 0 ? lengthValue = false : lengthValue = true;
+    return lengthValue;
+  }
+
+  onReset(){
+    this.username = '';
+  }
+
+}
+----
+
+.servers.component.html
+----
+<p>servers works!</p>
+<input type="text" [(ngModel)]="username">
+<p> {{ username }} </p>
+<button [disabled]="onCheckLength()" (click)="onReset()"> Clic </button>
+----
+
+====
+
+
+
+=== Directives
+
+*Directives* are instructions in the DOM.
+
+==== Structural directives
+
+===== NgIf
+
+*NgIf* is a directive witch delete the selector from the DOM, not hidden, just not there.
+
+link:https://angular.io/api/common/NgIf[Angular doc *ngIf]
+
+.servers.component.ts
+----
+export class ServersComponent implements OnInit {
+  (...)
+  serverCreated = false;
+
+  (...)
+
+  onCreateServer(){
+    this.serverCreated = true;
+    this.serverCreationStatus = 'Server was created! Name is ' + this.serverName;
+  }
+}
+----
+
+.servers.component.html
+----
+(...)
+<p *ngIf="serverCreated"> Server was created, server name is {{ serverName }}</p>
+(...)
+----
+
+==== Attribute directives
+
+Unlike structural directives, *attribute directives* don't add or remove elements.
+They only change the element they were placed on.
+
+===== NgStyle
+
+.servers.component.ts
+----
+(...)
+export class ServerComponent{
+  (...)
+  serverStatus: string = 'offline';
+
+  (...)
+
+  getColor(){
+    return this.serverStatus === 'online' ? 'green' : 'red';
+  }
+
+}
+----
+
+.app.component.html
+----
+<p [ngStyle]="{backgroundColor: getColor()}">{{ 'Server' }} with ID {{ serverId }} is {{ getServerStatus() }}</p>
+----
+
+
+===== NgClass
+
+Where `ngStyle` allowed us to change the CSS style itself, `ngClass` allows us to dynamically remove or add CSS classes.
+
+.server.component.html
+----
+<p
+  [ngStyle]="{backgroundColor: getColor()}"
+  [ngClass]="{online: serverStatus === 'online'}">
+  {{ 'Server' }} with ID {{ serverId }} is {{ getServerStatus() }}
+</p>
+----
+Affects class `online` if `serverStatus` equals `'online'`
+
+.server.component.ts
+----
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html',
+  styles: ['
+    .online{
+      color: white;
+      }
+    ']
+  })
+----
+
+
+===== NgFor
+
+A structural directive that renders a template for each item in a collection.
+The directive is placed on an element, which becomes the parent of the cloned templates.
+
+.servers.component.html
+----
+<li *ngFor="let item of items; index as i> ... </li>"
+----
+
+.Expended version
+[%collapsible]
+====
+.servers.component.html
+----
+<ng-template ngFor let-item [ngForOf]="items" let-i="index" [ngForTrackBy]="trackByFn">
+  <li>...</li>
+</ng-template>
+----
+====
+
+
+
+
+
+
+*
