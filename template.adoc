@@ -9,9 +9,13 @@
 = Getting started with writing a Guide
 
 With this guide you'll learn how to create a guide.
-https://leanpub.com/awesomeasciidoctornotebook/read
-https://powerman.name/doc/asciidoc
-https://docs.asciidoctor.org/asciidoc/latest/verbatim/source-blocks/
+
+link:https://powerman.name/doc/asciidoc[Powerman]
+/ link:https://angular.io/docs[Angular.io]
+/ link:https://docs.asciidoctor.org/asciidoc/latest/[Asciidoctor.org]
+/ link:https://codepen.io[CodePen.io]
+/ link:https://getbootstrap.com/docs/4.0/components/alerts/[Bootstrap]
+/ link:https://powerman.name/doc/asciidoc[AsciiDoc cheatsheet]
 
 == What you'll build
 
