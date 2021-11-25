@@ -1,0 +1,307 @@
+:imagesdir: images
+:couchbase_version: current
+:toc:
+:project_id: gs-how-to-write-a-guide
+:icons: font
+:source-highlighter: prettify
+:tags: guides,meta
+
+= Java - Spring
+
+
+.Links :
+[%collapsible]
+====
+link:https://powerman.name/doc/asciidoc[Powerman]
+/ link:https://angular.io/docs[Angular.io]
+/ link:https://docs.asciidoctor.org/asciidoc/latest/[Asciidoctor.org]
+/ link:https://codepen.io[CodePen.io]
+/ link:https://getbootstrap.com/docs/4.0/components/alerts/[Bootstrap]
+/ link:https://powerman.name/doc/asciidoc[AsciiDoc cheatsheet]
+
+Current course on Udemy : 
+link:https://www.udemy.com/course/spring-hibernate-tutorial/learn/lecture/5117036#overview[Udemy - Spring / Hibernate includes Spring Boot]
+====
+
+
+
+
+== Introduction
+
+*Spring Container* => Create and manage objects (_Inversion of Control_), inject object's dependencies (_Dependency Injection_)
+
+=== Spring  IoC - Inversion of Control
+
+
+The Inversion of Control allowes us to implement _Dependency Injection_ pattern.
+
+==== Old fashioned without IoC
+.Exemple
+[%collapsible]
+====
+1. Create `Coach` interface
+2. Create `BaseballCoach` class implementing `Coach`
+2 In the main, instantiate a new coach
+
+[source,java]
+----
+public static void main (String[] args) {
+
+    // create the coach
+    Coach theCoach = new BaseballCoach();
+
+    // use the coach
+    System.out.println(theCoach.getDailyWorkout())
+}
+----
+====
+
+==== New process with XML configuration
+
+.*Configuring Spring Container*
+[%collapsible]
+====
+- XML configuration file (legacy)
+- Java Annotations
+- Java Source Code
+====
+
+
+.*Spring development process*
+[%collapsible]
+====
+1. Configure your *Spring Beans*
+2. Create a *Spring Container*
+3. Retrieve Beans from Spring Container
+====
+
+._What is a Spring Bean ?_
+[%collapsible]
+====
+A *"Spring Bean"* is simply a Java Object.
+
+When Java objects are created by the Spring Container, then Spring refers to them as "Spring Beans".
+
+Spring Beans are created from normal Java classes ... just like Java objects.
+
+In the early days, there was a term called *"Java Beans"*. Spring Beans have a similar concept but Spring Beans do not follow all of the rigourous requirements of Java Beans.
+====
+
+.Exemple - Spring Inversion of Controle and Dependency Injection with *XML configuration*
+[%collapsible]
+====
+1. Import the `ClassPathXmlApplicationContext` in the class with `void main`
+
+.HelloSpringApp.java
+----
+public class HelloSpringApp{
+
+    public static void main(String[] args) {
+        // load the spring configuration file
+        ClassPathXmlApplicationContexte context = 
+            new ClassPathApplicationContext("applicationContext.xml")
+
+        // retrieve bean from Spring Container
+        Coach theCoach = context.getBean("myCricketCoach", CricketCoach.class);
+
+        // call methods on the bean
+        System.out.println(theCoach.getDailyWorkout());
+
+        // close the context
+        context.close();
+    }
+}
+----
+
+.CricketCoach.java
+----
+public class CricketCoach implements Coach {
+    
+    private FortuneService fortuneService;
+
+    // create a no-arg constructor
+    public CricketCoach(){
+        System.out.println("CricketCoach: inside no-arg constructor");
+    }
+
+    // our setter method
+    public void setFortuneService(FortuneService fortuneService){
+        System.out.println("CricketCoach: inside setter method - setFortuneService");
+        this.fortuneService = fortuneService;
+    }
+
+    @Override
+    public String getDailyWorkout(){
+        return "Practice fast bowling for 15 minutes";
+    }
+
+    @Override
+    public String getDailyFortune(){
+        return fortuneService.getFortune();
+    }
+}
+----
+
+.applicationContext.xml
+----
+<bean id="myCricketCoach"
+    class="com.luv2code.springdemo.CricketCoach">
+
+    <property name="fortuneService" ref="myFortuneService" />
+
+</bean>
+----
+
+*Result* : The class witch is instantiated during the retrieving can be changed directly in the `applicationContext.xml` without touching the source code.
+====
+
+
+
+
+
+=== Spring Dependency Injection
+
+_Dependency Injection_ means giving an object its instance variables.
+
+
+
+
+
+
+
+=== Bean scopes
+
+Scope refers to the lifecycle of a bean.
+
+._What is a Singleton ?_
+[%collapsible]
+====
+Spring Container creates only one instance of the bean, by default.
+
+It is cached in memory.
+
+All requests for the bean will return a SHARED reference to the SAME bean
+
+====
+
+
+.Additional Spring Bean Scopes 
+[%collapsible]
+====
+=> *Singleton* : Create a single shared instance of the bean. Default scope.
+
+=> *Prototype* : Creates a new bean instance for each container request.
+
+=> *Request* : Scoped to an HTTP  request. Only used for web apps.
+
+=> *Session* : Scoped to an HTTP web session. Only used for web apps.
+
+=> *Global-session* : Scopes to a globale HTTP web sessions. Only used for web apps.
+====
+
+
+
+
+== Java Annotations
+
+Special labels / markers added to Java classes.
+
+Provide meta-data about the class.
+
+Processed at compile time or run-time for special processing.
+
+For exemple, `Override` is an Annotation witch is check during compilation time.
+
+==== Process
+Spring will automatically scan your Java classes for special annotations and will register the beans in the Spring container.
+
+.Step 1 - Enable component scanning in Spring config file
+[%collapsible]
+====
+----
+<beans ... >
+ 
+ <context:component-scan base-package="com.luv2code.springdemo" />
+
+</beans>
+----
+
+In order to identify the components that have annotations on it and it'll automatically register them in the Spring container.
+====
+
+.Step 2 - Add the @Component Annotation to your Java classes
+[%collapsible]
+====
+----
+// Annotation + bean ID
+@Component("thatSillyCoach")
+public class TennisCoach implements Coach {
+    
+ @Override
+ public String getDailyWorkout() {
+     return "Practice your backhand volley"
+ }
+ 
+}
+----
+====
+
+
+.Step 3 - Retrieve bean from Spring container
+[%collapsible]
+====
+----
+Coach = theCoach = context.getBean("thatSillyCoach", Coach.class);
+----
+====
+
+
+
+
+
+== Spring REST
+
+=== Overview
+
+Connexion => *REST API* calls over _HTTP_
+
+REST = REpresentational State Transfer, witch is a lightweight approach for communicating between applications.
+
+._Which data format ?_
+[%collapsible]
+====
+Commonly see XML and JSON, *JSON* is the most popular and modern (JavaScript Object Notation).
+
+Lightweight data format for stroing and exchanging data.
+
+Independent language, not just for JavaScript.
+====
+
+
+
+=== JSON to Java POJO
+
+==== Use Jackson
+
+====
+import java.io.File
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class Driver {
+    
+    public static void main(String[] args) thows Exception {
+
+        // create object mapper
+        ObjectMapper  mapper = new ObjectMapper();
+
+        // read JSON from file and map/convert to Java POJO
+        Student myStudent = mapper.readValue(new File("data/sample.json"), Student.class);
+
+        // also print individual items
+        System.out.println("First name = " + myStudent.getFirstName());
+        System.out.println("Last name = " + myStudent.getLastName());
+    }
+}
+====
+
