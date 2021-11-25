@@ -1,0 +1,323 @@
+:imagesdir: images
+:couchbase_version: current
+:toc:
+:project_id: gs-how-to-write-a-guide
+:icons: font
+:source-highlighter: prettify
+:tags: guides,meta
+
+
+= JSON convert / File manager
+
+== File manager
+
+
+
+.FileAdministrator
+[%collapsible]
+====
+.FileAdministrator.java
+----
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class FileAdministrator {
+
+    // "filename.txt"
+    private String fileTitle;
+    // "some text"
+    private String content;
+
+    public void createFile(String fileTitle){
+        try {
+            File myObj = new File(fileTitle);
+            if (myObj.createNewFile()) {
+                System.out.println("File created: " + myObj.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public void editFile(String fileTitle, String content){
+        try {
+            FileWriter myWriter = new FileWriter(fileTitle);
+            myWriter.write((content));
+            myWriter.close();
+            System.out.println("Editing correctly file " + fileTitle);
+
+        } catch (IOException e) {
+            System.out.println("An error occured");
+            e.printStackTrace();
+        }
+    }
+
+    public void checkIfFileIsEmpty(String fileTitle){
+        File fileToCheck = new File(fileTitle);
+
+        if (fileToCheck.length() == 0){
+            System.out.println("File is empty");
+        } else {
+            System.out.println("File is not empty");
+        }
+
+    }
+
+}
+
+----
+
+.AppDemo.java
+----
+import JavaObject.Person;
+
+public class AppDemo {
+
+    public static void main (String []args) throws Exception {
+        
+
+// |==================================================|
+// |            File management tests                 |
+// |==================================================|
+
+        String fileTitle = "fileTest.txt";
+        String fileContent = "Write in a file is a tricky action, but it's really usable!";
+
+        System.out.println();
+        System.out.println("|---------------------|");
+        System.out.println("|  File Manager test  |");
+        System.out.println("|---------------------|");
+        System.out.println();
+
+        FileAdministrator fileAdm = new FileAdministrator();
+
+        // Step 1 - Create a file
+        fileAdm.createFile(fileTitle);
+
+        // Step 2 - Edit a file
+        fileAdm.editFile(fileTitle, fileContent);
+
+        // Step 3 - Check if a file is empty
+        fileAdm.checkIfFileIsEmpty(fileTitle);
+    
+
+}
+
+----
+====
+
+== Jackson use
+
+=== JSON to Java POJO
+
+
+.Homemade exemple, JSON => POJO
+[%collapsible]
+====
+link:http://tutorials.jenkov.com/java-json/jackson-installation.html[Jackson dependencies] / link:http://tutorials.jenkov.com/java-json/jackson-objectmapper.html[Jaskson tutorial ObjectMapper]
+
+.AppDemo.java
+----
+public class AppDemo {
+
+    public static void main (String []args) throws Exception {
+
+        JsonConvertAdministrator jsConvert = new JsonConvertAdministrator();
+
+        // Step 1
+        jsConvert.readJson();
+    }
+}
+----
+
+.JsonConvertAdministrator.java
+----
+import java.io.File;
+
+public class JsonConvertAdministrator {
+
+    public void readJson () throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+
+        Person personTest = (mapper.readValue(new File("test.json"), Person.class));
+
+        System.out.println("First name: " + personTest.getFirstName());
+        System.out.println("Last name: " + personTest.getLastName());
+    }
+}
+----
+
+.Person.java
+----
+package JavaObject;
+
+public class Person {
+
+    private int id;
+    private String firstName;
+    private String lastName;
+    private boolean active;
+
+    public Person(int id, String firstName, String lastName, boolean active) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.active = active;
+    }
+
+    public Person() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+}
+
+----
+
+====
+
+
+
+
+
+=== Java POJO to JSON
+
+.Homemade exemple, POJO => JSON
+[%collapsible]
+====
+link:http://tutorials.jenkov.com/java-json/jackson-installation.html[Jackson dependencies] / link:http://tutorials.jenkov.com/java-json/jackson-objectmapper.html[Jaskson tutorial ObjectMapper]
+
+.AppDemo.java
+----
+import JavaObject.Person;
+
+public class AppDemo {
+
+    public static void main (String []args) throws Exception {
+
+ // |==================================================|
+ // |            JSON convert tests                    |
+ // |==================================================|
+
+        JsonConvertAdministrator jsConvert = new JsonConvertAdministrator();
+
+        String filePathNameReadFunction = "test.json";
+
+        System.out.println();
+        System.out.println("|-----------------------------|");
+        System.out.println("|  JSON Convert Manager test  |");
+        System.out.println("|-----------------------------|");
+        System.out.println();
+
+        // Step 1 - Create file
+        /*jsConvert.readJson(filePathNameReadFunction);*/
+
+        // Step 2 - Create the object
+        Person personToSave = new Person(
+                2,
+                "Nour",
+                "Attié",
+                true);
+
+        // Step 3 - Save the object
+        jsConvert.writeJson("testWrite.json", personToSave);
+
+    }
+
+}
+
+----
+
+.Person.java
+----package JavaObject;
+
+public class Person {
+
+    private int id;
+    private String firstName;
+    private String lastName;
+    private boolean active;
+
+    public Person(int id, String firstName, String lastName, boolean active) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.active = active;
+    }
+
+    public Person() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+}
+----
+
+
+
+====
+
+
+
