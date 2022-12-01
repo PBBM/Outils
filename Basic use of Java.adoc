@@ -1,0 +1,36 @@
+:imagesdir: images
+:couchbase_version: current
+:toc:
+:project_id: gs-how-to-write-a-guide
+:icons: font
+:source-highlighter: prettify
+:tags: guides,meta
+
+
+= Basic use of Java on MacOS
+
+===== Links
+
+link:https://mkyong.com/java/how-to-set-java_home-environment-variable-on-mac-os-x/[How to set $JAVA_HOME environment]
+
+link:https://medium.com/@devkosal/switching-java-jdk-versions-on-macos-80bc868e686a[Switching JDK version]
+
+===== Find all installed JDKs:
+
+  /usr/libexec/java_home
+
+Return the location of the default JDK
+
+  /Library/Java/JavaVirtualMachines/jdk-16.jdk/Contents/Home
+
+
+
+===== Also, find all installed JDKs:
+
+  /usr/libexec/java_home -V
+  Matching Java Virtual Machines (4):
+    16 (x86_64) "Oracle Corporation" - "OpenJDK 16-ea" /Library/Java/JavaVirtualMachines/jdk-16.jdk/Contents/Home
+    15.0.1 (x86_64) "UNDEFINED" - "OpenJDK 15.0.1" /usr/local/Cellar/openjdk/15.0.1/libexec/openjdk.jdk/Contents/Home
+    14.0.2 (x86_64) "AdoptOpenJDK" - "AdoptOpenJDK 14" /Library/Java/JavaVirtualMachines/adoptopenjdk-14.jdk/Contents/Home
+    1.8.0_275 (x86_64) "UNDEFINED" - "OpenJDK 8" /usr/local/Cellar/openjdk@8/1.8.0+275/libexec/openjdk.jdk/Contents/Home
+  /Library/Java/JavaVirtualMachines/jdk-16.jdk/Contents/Home
